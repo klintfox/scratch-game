@@ -1,0 +1,40 @@
+# Java
+*.class
+*.log
+*.jar
+*.war
+*.ear
+*.db
+
+# Gradle
+.gradle/
+build/
+!build/libs/
+!build/distributions/
+
+# Gradle Wrapper
+gradle-wrapper.jar
+gradle-wrapper.properties
+
+# JaCoCo
+*.exec
+jacocoTestReport/
+jacocoTestCoverageVerification/
+
+# IDEs
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build tools
+/.gradle/
+build/

@@ -1,0 +1,9 @@
+{
+  "winCombinations": [
+    { "when": "same_symbol", "coveredAreas": [["0_0", "0_1", "0_2"]], "rewardMultiplier": 2 }
+  ],
+  "symbols": {
+    "A": {"rewardMultiplier": 5},
+    "B": {"rewardMultiplier": 3}
+  }
+}
