@@ -312,7 +312,7 @@ Examples (with a winning combination [same symbols should be repeated at least 3
 
 Lost game:
 
-![Lost Game](lost_game.png "Lost")
+![Lost Game](https://github.com/klintfox/scratch-game/blob/main/src/main/resources/captures/lost_game.png "Lost")
 
 | input             | output                                                                                                                      |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------|
@@ -326,7 +326,7 @@ Description: The game is settled as LOST, so bonus symbol has not been applied b
 
 Won game:
 
-![Won Game](won_game_3x3.png "Won with 10x")
+![Won Game](https://github.com/klintfox/scratch-game/blob/main/src/main/resources/captures/won_game_3x3.png "Won with 10x")
 
 | input             | output                                                                                                                                                                                                                                                   |
 |-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -372,4 +372,4 @@ Note: Please make sure there are no errors while building (all test cases should
 ```
 
 ### Coverage
-[!]()
+![Coverage](https://github.com/klintfox/scratch-game/blob/main/src/main/resources/coverage/coverage.PNG "Code Coverage")
