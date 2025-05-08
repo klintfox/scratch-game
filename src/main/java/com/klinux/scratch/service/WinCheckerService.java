@@ -126,7 +126,6 @@ public class WinCheckerService {
 		return 0; // or throw an exception if you prefer
 	}
 
-	//Mejorar esto 
 	private WinResult getWinCombinationOptionalMultiplier(String symbolName, String[][] matrix,
 	        Map<String, WinCombination> winCombinations) {
 
@@ -161,7 +160,6 @@ public class WinCheckerService {
 	            if (matches) {
 	                totalMultiplier *= winCombination.getRewardMultiplier();
 	                applied.add(name);
-	                break; // Solo una coincidencia por combinación, pero se pueden aplicar varias combinaciones distintas
 	            }
 	        }
 	    }
