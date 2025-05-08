@@ -357,16 +357,23 @@ Note: Please make sure there are no errors while building (all test cases should
 
 ## Solution 
 1.- Clone the repository
+Open a terminal and run:
+
 ```sh
- git clone 
+ git clone https://github.com/klintfox/scratch-game.git
 ```
-2.- Open terminal in the root of project and install dependencies with maven running :
+2.- Open a terminal in the root directory of the project
+Build the project using Maven:
+
 ```bash
  mvn clean package
 ```
-3.- in scratch-game\target copy the file "scratch-game-1.0-SNAPSHOT.jar". Also copy the config.json in a external file
+3.- Locate the generated .jar file
+Go to the scratch-game/target directory and copy the file scratch-game-1.0-SNAPSHOT.jar.
+Also, copy the config.json file to an external directory of your choice.
 
-4.- open command prompt and move to the external file where are the .jar and json file an exect the follow command to begin the game
+4.- Run the game
+Open a terminal (or Command Prompt), navigate to the directory where both the .jar file and the config.json are located, and execute:
 ```sh
  java -jar scratch-game-1.0-SNAPSHOT.jar -config config/config.json -bettingAmount 100
 ```
