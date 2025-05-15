@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.klinux.scratch.model.GameConfiguration;
+import com.klinux.scratch.model.Result;
 import com.klinux.scratch.util.GameConfigLoader;
 
 class WinCheckerServiceTest {
@@ -29,10 +30,10 @@ class WinCheckerServiceTest {
             {"F", "E", "A"},
             {"A", "B", "D"}
         };        
-        double result = winCheckerService.checkWins(matrix, betAmount);
+        Result result = winCheckerService.checkWins(matrix, betAmount);
         double expectedReward = 0.0;
 
-        assertEquals(expectedReward, result, 0.01); //0.01 delta 
+        assertEquals(expectedReward, result.getReward(), 0.01); //0.01 delta 
     }
 
     @Test
@@ -42,10 +43,10 @@ class WinCheckerServiceTest {
             {"F", "D", "D"},
             {"A", "B", "A"}
         };        
-        double result = winCheckerService.checkWins(matrix, betAmount);
+        Result result = winCheckerService.checkWins(matrix, betAmount);
         double expectedReward = 200.0;
 
-        assertEquals(expectedReward, result, 0.01); //0.01 delta 
+        assertEquals(expectedReward, result.getReward(), 0.01); //0.01 delta 
     }
     
     @Test
@@ -55,10 +56,10 @@ class WinCheckerServiceTest {
             {"F", "D", "D"},
             {"E", "B", "A"}
         };        
-        double result = winCheckerService.checkWins(matrix, betAmount);
+        Result result = winCheckerService.checkWins(matrix, betAmount);
         double expectedReward = 200.0;
 
-        assertEquals(expectedReward, result, 0.01); //0.01 delta 
+        assertEquals(expectedReward, result.getReward(), 0.01); //0.01 delta 
     }
     
     @Test
@@ -68,10 +69,10 @@ class WinCheckerServiceTest {
             {"D", "E", "A"},  
             {"B", "A", "C"}
         };                
-        double result = winCheckerService.checkWins(matrix,betAmount);
+        Result result = winCheckerService.checkWins(matrix,betAmount);
         double expectedReward = 750.0;
 
-        assertEquals(expectedReward, result, 0.01);
+        assertEquals(expectedReward, result.getReward(), 0.01);
     }
     
     @Test
@@ -81,10 +82,10 @@ class WinCheckerServiceTest {
             {"D", "E", "F"},  
             {"A", "A", "D"}
         };                
-        double result = winCheckerService.checkWins(matrix,betAmount);
+        Result result = winCheckerService.checkWins(matrix,betAmount);
         double expectedReward = 2000.0;
 
-        assertEquals(expectedReward, result, 0.01);
+        assertEquals(expectedReward, result.getReward(), 0.01);
     }
     
     
@@ -95,10 +96,10 @@ class WinCheckerServiceTest {
             {"A", "E", "B"},  
             {"A", "A", "B"}
         };                
-        double result = winCheckerService.checkWins(matrix,betAmount);
+        Result result = winCheckerService.checkWins(matrix,betAmount);
         double expectedReward = 2600.0;
 
-        assertEquals(expectedReward, result, 0.01);
+        assertEquals(expectedReward, result.getReward(), 0.01);
     }
     
     @Test
@@ -108,10 +109,10 @@ class WinCheckerServiceTest {
             {"E", "E", "C"},  
             {"E", "E", "E"}
         };                
-        double result = winCheckerService.checkWins(matrix,betAmount);
+        Result result = winCheckerService.checkWins(matrix,betAmount);
         double expectedReward = 1440.0;
 
-        assertEquals(expectedReward, result, 0.01);
+        assertEquals(expectedReward, result.getReward(), 0.01);
     }    
     
 }

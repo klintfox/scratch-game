@@ -2,11 +2,11 @@ package com.klinux.scratch.model;
 
 import java.util.List;
 
-public class WinResult {
+public class WinCombinationOptionalResult {
     private double multiplier;
     private List<String> appliedCombinations;
 
-    public WinResult(double multiplier, List<String> appliedCombinations) {
+    public WinCombinationOptionalResult(double multiplier, List<String> appliedCombinations) {
         this.multiplier = multiplier;
         this.appliedCombinations = appliedCombinations;
     }

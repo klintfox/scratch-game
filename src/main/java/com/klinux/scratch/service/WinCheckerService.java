@@ -4,17 +4,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.klinux.scratch.model.GameConfiguration;
+import com.klinux.scratch.model.Result;
 import com.klinux.scratch.model.Symbol;
 import com.klinux.scratch.model.SymbolType;
 import com.klinux.scratch.model.WinCombination;
-import com.klinux.scratch.model.WinResult;
+import com.klinux.scratch.model.WinCombinationOptionalResult;
 
-public class WinCheckerService {	
+public class WinCheckerService {
 
 	private final GameConfiguration config;
 
@@ -22,76 +24,54 @@ public class WinCheckerService {
 		this.config = config;
 	}
 
-	public double checkWins(String[][] matrix, double betAmount) {
+	public Result checkWins(String[][] matrix, double betAmount) {
 
-	    // Step 1: Get allSymbols from settings
-	    Map<String, Symbol> allSymbols = config.getSymbols();
+		Result result = new Result();
+		result.setMatrix(matrix);
 
-	    // Step 2: Filter STANDARD symbols that appear at least 3 times in the array
-	    Map<String, Integer> frequentStandardSymbols = getFrequentStandardSymbols(matrix, allSymbols);
+		// Step 1: Get allSymbols from settings
+		Map<String, Symbol> allSymbols = config.getSymbols();
 
-	    // Step 3: For each symbol we find the reward
-	    List<Double> rewards = new ArrayList<>();
-	    Map<String, List<String>> appliedWinningCombinations = new HashMap<>();
+		// Step 2: Filter STANDARD symbols that appear at least 3 times in the array
+		Map<String, Integer> frequentStandardSymbols = getFrequentStandardSymbols(matrix, allSymbols);
 
-	    for (Map.Entry<String, Integer> entry : frequentStandardSymbols.entrySet()) {
-	        String symbolName = entry.getKey();
-	        int nTimesSymbolRepeated = entry.getValue();
-	        Symbol symbol = allSymbols.get(symbolName);
+		// Step 3: For each symbol we find the reward
+		List<Double> rewards = new ArrayList<>();
+		Map<String, List<String>> appliedWinningCombinations = new HashMap<>();
 
-	        if (symbol != null) {
-	            double winCombination = getWinCombinationMultiplierByCount(nTimesSymbolRepeated, config.getWinCombinations());
+		for (Map.Entry<String, Integer> entry : frequentStandardSymbols.entrySet()) {
+			String symbolName = entry.getKey();
+			int nTimesSymbolRepeated = entry.getValue();
+			Symbol symbol = allSymbols.get(symbolName);
 
-	            double simpleWinCombination = BigDecimal.valueOf(
-	                    symbol.getRewardMultiplier() * winCombination
-	            ).setScale(2, RoundingMode.HALF_UP).doubleValue();
+			if (symbol != null) {
+				double winCombination = getWinCombinationMultiplierByCount(nTimesSymbolRepeated,
+						config.getWinCombinations());
 
-	            WinResult winResult = getWinCombinationOptionalMultiplier(symbolName, matrix, config.getWinCombinations());
-	            double winCombinationOptional = winResult.getMultiplier();
+				double simpleWinCombination = BigDecimal.valueOf(symbol.getRewardMultiplier() * winCombination)
+						.setScale(2, RoundingMode.HALF_UP).doubleValue();
 
-	            double totalReward = (winCombinationOptional > 0)
-	                ? betAmount * simpleWinCombination * winCombinationOptional
-	                : betAmount * simpleWinCombination;
+				WinCombinationOptionalResult winCombinarionOptionalResult = getWinCombinationOptionalMultiplier(
+						symbolName, matrix, config.getWinCombinations());
+				double winCombinationOptional = winCombinarionOptionalResult.getMultiplier();
 
-	            rewards.add(totalReward);
+				double totalReward = (winCombinationOptional > 0)
+						? betAmount * simpleWinCombination * winCombinationOptional
+						: betAmount * simpleWinCombination;
 
-	            List<String> reasons = new ArrayList<>();
-	            reasons.add("same_symbol_" + nTimesSymbolRepeated + "_times");
-	            reasons.addAll(winResult.getAppliedCombinations());
+				rewards.add(totalReward);
 
-	            appliedWinningCombinations.put(symbolName, reasons);
-	            System.out.println("- Symbol: " + symbolName + " - " + nTimesSymbolRepeated + " times.");
-	        }
-	    }
+				List<String> reasons = new ArrayList<>();
+				reasons.add("same_symbol_" + nTimesSymbolRepeated + "_times");
+				reasons.addAll(winCombinarionOptionalResult.getAppliedCombinations());
 
-	    printAppliedWinningCombinations(appliedWinningCombinations);
-
-	    return rewards.stream().mapToDouble(Double::doubleValue).sum();
-	}
-	
-	private void printAppliedWinningCombinations(Map<String, List<String>> appliedWinningCombinations) {
-	    if (!appliedWinningCombinations.isEmpty()) {
-	        System.out.println("- Applied Winning Combinations: {");
-	        int count = 0;
-	        for (Map.Entry<String, List<String>> entry : appliedWinningCombinations.entrySet()) {
-	            String symbol = entry.getKey();
-	            List<String> combos = entry.getValue();
-	            System.out.print("    \"" + symbol + "\": [");
-	            for (int i = 0; i < combos.size(); i++) {
-	                System.out.print("\"" + combos.get(i) + "\"");
-	                if (i < combos.size() - 1) System.out.print(", ");
-	            }
-	            System.out.print("]");
-	            if (++count < appliedWinningCombinations.size()) {
-	                System.out.println(",");
-	            } else {
-	                System.out.println();
-	            }
-	        }
-	        System.out.println("  }");
-	    }
-	}
-
+				appliedWinningCombinations.put(symbolName, reasons);
+			}
+		}
+		result.setReward(rewards.stream().mapToDouble(Double::doubleValue).sum());
+		result.setAppliedWinningCombinations(appliedWinningCombinations);
+		return result;
+	}	
 
 	private Map<String, Integer> getFrequentStandardSymbols(String[][] matrix, Map<String, Symbol> allSymbols) {
 		Map<String, Integer> symbolCounts = new HashMap<>();
@@ -105,7 +85,6 @@ public class WinCheckerService {
 				}
 			}
 		}
-
 		// Filter symbols that appear at least 3 times
 		return symbolCounts.entrySet().stream().filter(entry -> entry.getValue() >= 3)
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -126,47 +105,46 @@ public class WinCheckerService {
 		return 0; // or throw an exception if you prefer
 	}
 
-	private WinResult getWinCombinationOptionalMultiplier(String symbolName, String[][] matrix,
-	        Map<String, WinCombination> winCombinations) {
+	private WinCombinationOptionalResult getWinCombinationOptionalMultiplier(String symbolName, String[][] matrix,
+			Map<String, WinCombination> winCombinations) {
 
-	    double totalMultiplier = 1.0;
-	    List<String> applied = new ArrayList<>();
+		double totalMultiplier = 1.0;
+		List<String> applied = new ArrayList<>();
 
-	    for (Map.Entry<String, WinCombination> entry : winCombinations.entrySet()) {
-	        WinCombination winCombination = entry.getValue();
-	        String name = entry.getKey();
+		for (Map.Entry<String, WinCombination> entry : winCombinations.entrySet()) {
+			WinCombination winCombination = entry.getValue();
+			String name = entry.getKey();
 
-	        if (!"linear_symbols".equalsIgnoreCase(winCombination.getWhen()))
-	            continue;
+			if (!"linear_symbols".equalsIgnoreCase(winCombination.getWhen()))
+				continue;
 
-	        List<List<String>> coveredAreas = winCombination.getCoveredAreas();
-	        if (coveredAreas == null)
-	            continue;
+			List<List<String>> coveredAreas = winCombination.getCoveredAreas();
+			if (coveredAreas == null)
+				continue;
 
-	        for (List<String> area : coveredAreas) {
-	            boolean matches = true;
+			for (List<String> area : coveredAreas) {
+				boolean matches = true;
 
-	            for (String coord : area) {
-	                String[] parts = coord.split(":");
-	                int row = Integer.parseInt(parts[0]);
-	                int col = Integer.parseInt(parts[1]);
+				for (String coord : area) {
+					String[] parts = coord.split(":");
+					int row = Integer.parseInt(parts[0]);
+					int col = Integer.parseInt(parts[1]);
 
-	                if (!matrix[row][col].equals(symbolName)) {
-	                    matches = false;
-	                    break;
-	                }
-	            }
+					if (!matrix[row][col].equals(symbolName)) {
+						matches = false;
+						break;
+					}
+				}
 
-	            if (matches) {
-	                totalMultiplier *= winCombination.getRewardMultiplier();
-	                applied.add(name);
-	            }
-	        }
-	    }
+				if (matches) {
+					totalMultiplier *= winCombination.getRewardMultiplier();
+					applied.add(name);
+				}
+			}
+		}
 
-	    return applied.isEmpty() ? new WinResult(0.0, List.of()) : new WinResult(totalMultiplier, applied);
+		return applied.isEmpty() ? new WinCombinationOptionalResult(0.0, List.of())
+				: new WinCombinationOptionalResult(totalMultiplier, applied);
 	}
-
-
 
 }

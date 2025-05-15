@@ -1,0 +1,29 @@
+{
+  "symbols": {
+    "A": {
+      "name": "Símbolo A",
+      "type": "REGULAR",
+      "reward_multiplier": 2.5
+    },
+    "B": {
+      "name": "Bónus Especial",
+      "type": "BONUS",
+      "reward_multiplier": 5.0
+    },
+    "C": {
+      "name": "Carácter@123",
+      "type": "REGULAR",
+      "reward_multiplier": 1.5
+    }
+  },
+  "winCombinations": [
+    {
+      "symbols": ["A", "A", "A"],
+      "reward": 100
+    },
+    {
+      "symbols": ["B", "C", "A"],
+      "reward": 200
+    }
+  ]
+}

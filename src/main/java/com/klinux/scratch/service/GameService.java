@@ -7,6 +7,7 @@ import java.util.Map;
 import com.klinux.scratch.model.BonusEffect;
 import com.klinux.scratch.model.BonusImpact;
 import com.klinux.scratch.model.GameConfiguration;
+import com.klinux.scratch.model.Result;
 import com.klinux.scratch.model.Symbol;
 import com.klinux.scratch.model.SymbolType;
 
@@ -14,32 +15,32 @@ public class GameService {
 
 	private final GameConfiguration config;
 	private final WinCheckerService winCheckerService;
-	private double betAmount;
 
-	public GameService(GameConfiguration config, double betAmount) {
+	public GameService(GameConfiguration config) {
 		this.config = config;
 		this.winCheckerService = new WinCheckerService(config);
-		this.betAmount = betAmount;
 	}
 
-	public double startGame(String[][] matrix) {
+	public Result startGame(String[][] matrix, double betAmount) {
 
 		double reward = 0;
-		reward = (winCheckerService.checkWins(matrix, betAmount));
+		Result result = new Result();
+		result = (winCheckerService.checkWins(matrix, betAmount));
+		reward = result.getReward();
 		if (reward > 0) {
 			// Get bonus symbols from matrix and apply to reward
 			Map<String, Symbol> allSymbols = config.getSymbols();
 			List<BonusEffect> bonusEffects = extractBonusEffects(matrix, allSymbols);
+			List<String> appliedBonusSymbol = new ArrayList<>();
 
 			// If any symbol is "MISS", the bonuses are voided
-			boolean hasMiss = bonusEffects.stream()
-				.anyMatch(effect -> "MISS".equals(effect.getSymbolName()));
+			boolean hasMiss = bonusEffects.stream().anyMatch(effect -> "MISS".equals(effect.getSymbolName()));
 
 			if (!hasMiss) {
 				for (BonusEffect effect : bonusEffects) {
-					
-					System.out.println("- Applied Bonus Symbol: " + effect.getSymbolName());
-					
+
+					appliedBonusSymbol.add(effect.getSymbolName());
+
 					BonusImpact impact = effect.getImpact();
 					if (impact == BonusImpact.MULTIPLY_REWARD) {
 						reward *= effect.getRewardMultiplier();
@@ -47,11 +48,13 @@ public class GameService {
 						reward += effect.getExtra();
 					}
 				}
-			}else {
-				System.out.println("- Applied Bonus Symbol: MISS");
+			} else {
+				appliedBonusSymbol.add("Not applied - MISS");
 			}
-		}
-		return reward;
+			result.setReward(reward);
+			result.setAppliedBonusSymbol(appliedBonusSymbol);
+		}		
+		return result;
 	}
 
 	private List<BonusEffect> extractBonusEffects(String[][] matrix, Map<String, Symbol> allSymbols) {

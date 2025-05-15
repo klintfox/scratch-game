@@ -1,6 +1,8 @@
 package com.klinux.scratch;
 
 import java.io.PrintStream;
+import java.util.Collections;
+import java.util.HashMap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -8,14 +10,15 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import com.klinux.scratch.factory.GameServiceFactory;
 import com.klinux.scratch.factory.MatrixGeneratorServiceFactory;
 import com.klinux.scratch.model.GameConfiguration;
+import com.klinux.scratch.model.Result;
 import com.klinux.scratch.service.GameService;
 import com.klinux.scratch.service.MatrixGeneratorService;
 import com.klinux.scratch.util.GameConfigLoader;
-import org.apache.commons.cli.ParseException;
 
 public class ScratchGameApp {
 
@@ -37,21 +40,14 @@ public class ScratchGameApp {
         GameConfiguration config = configLoader.loadConfig(configPath);
         MatrixGeneratorService matrixGeneratorService = matrixFactory.create(config);
         String[][] matrix = matrixGeneratorService.generateMatrix();
-        printMatrix(matrix);
-        out.println("------------------------------");
-        GameService gameService = gameFactory.create(config, baseAmount);
-        double reward = gameService.startGame(matrix);
-        out.println("Reward: " + reward);
-    }
-
-    public void printMatrix(String[][] matrix) {
-        out.println("Matrix: ");
-        for (String[] row : matrix) {
-            for (String cell : row) {
-                out.print(cell + " ");
-            }
-            out.println();
+        GameService gameService = gameFactory.create(config);
+        Result result  = new Result(); 
+        result = gameService.startGame(matrix, baseAmount);
+        if (result.getReward() <= 0.0) {
+        	result.setAppliedWinningCombinations(new HashMap<>());
+            result.setAppliedBonusSymbol(Collections.emptyList());
         }
+        out.print(result);
     }
 
     public static void main(String[] args) {
@@ -89,4 +85,3 @@ public class ScratchGameApp {
         app.run(configPath, bettingAmount);
     }
 }
-

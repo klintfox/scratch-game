@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.klinux.scratch.model.GameConfiguration;
+import com.klinux.scratch.model.Result;
 import com.klinux.scratch.model.Symbol;
 import com.klinux.scratch.model.SymbolType;
 import com.klinux.scratch.util.GameConfigLoader;
@@ -27,9 +28,9 @@ public class GameServiceTest {
             {"A", "B", "+500"}
         };
 
-        GameService gameService = new GameService(config, 100);
-        double reward = gameService.startGame(matrix);
-        assertEquals(0, reward);
+        GameService gameService = new GameService(config);
+        Result result = gameService.startGame(matrix,100);
+        assertEquals(0, result.getReward());
     }
     
     @Test
@@ -40,9 +41,9 @@ public class GameServiceTest {
             {"A", "A", "B"}
         };
 
-        GameService gameService = new GameService(config, 100);
-        double reward = gameService.startGame(matrix);
-        assertEquals(3600.0, reward);
+        GameService gameService = new GameService(config);
+        Result result = gameService.startGame(matrix,100);
+        assertEquals(3600.0, result.getReward());
     }
 
     @Test
@@ -53,9 +54,9 @@ public class GameServiceTest {
             {"E", "F", "+500"}
         };
 
-        GameService gameService = new GameService(config, 100);
-        double reward = gameService.startGame(matrix);
-        assertEquals(1500.0, reward);
+        GameService gameService = new GameService(config);
+        Result result = gameService.startGame(matrix,100);
+        assertEquals(1500.0, result.getReward());
     }
 
     @Test
@@ -66,9 +67,9 @@ public class GameServiceTest {
             {"D", "E", "F"}
         };
 
-        GameService gameService = new GameService(config, 100);
-        double reward = gameService.startGame(matrix);
-        assertEquals(10000.0, reward); // 3 equals  → 3.0 * 100 = 300 + 50 extra
+        GameService gameService = new GameService(config);
+        Result result = gameService.startGame(matrix,100);
+        assertEquals(10000.0, result.getReward()); // 3 equals  → 3.0 * 100 = 300 + 50 extra
     }
 
     @Test
@@ -82,9 +83,9 @@ public class GameServiceTest {
             {"D", "E", "F"}
         };
 
-        GameService gameService = new GameService(config, 100);
-        double reward = gameService.startGame(matrix);
-        assertEquals(1000.0, reward);
+        GameService gameService = new GameService(config);
+        Result result = gameService.startGame(matrix,100);
+        assertEquals(1000.0, result.getReward());
     }
     
     @Test
@@ -95,9 +96,9 @@ public class GameServiceTest {
             {"D", "E", "F"}
         };
 
-        GameService gameService = new GameService(config, 100);
-        double reward = gameService.startGame(matrix);
-        assertEquals(1500.0, reward);
+        GameService gameService = new GameService(config);
+        Result result = gameService.startGame(matrix,100);
+        assertEquals(1500.0, result.getReward());
     }
     
     @Test
@@ -108,9 +109,9 @@ public class GameServiceTest {
             {"F", "D", "B"}
         };
 
-        GameService gameService = new GameService(config, 100);
-        double reward = gameService.startGame(matrix);
-        assertEquals(3000.0, reward);
+        GameService gameService = new GameService(config);
+        Result result = gameService.startGame(matrix,100);
+        assertEquals(3000.0, result.getReward());
     }
 
     @Test
@@ -122,8 +123,8 @@ public class GameServiceTest {
             {"E", "F", "G"}
         };
 
-        GameService gameService = new GameService(config, 100);
-        double reward = gameService.startGame(matrix);
-        assertEquals(1000.0, reward);
+        GameService gameService = new GameService(config);
+        Result result = gameService.startGame(matrix,100);
+        assertEquals(1000.0, result.getReward());
     }
 }
