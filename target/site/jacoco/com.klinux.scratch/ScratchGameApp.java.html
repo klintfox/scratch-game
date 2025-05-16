@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScratchGameApp.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">scratch-game</a> &gt; <a href="index.source.html" class="el_package">com.klinux.scratch</a> &gt; <span class="el_source">ScratchGameApp.java</span></div><h1>ScratchGameApp.java</h1><pre class="source lang-java linenums">package com.klinux.scratch;
+
+import java.io.PrintStream;
+import java.util.Collections;
+import java.util.HashMap;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import com.klinux.scratch.factory.GameServiceFactory;
+import com.klinux.scratch.factory.MatrixGeneratorServiceFactory;
+import com.klinux.scratch.model.GameConfiguration;
+import com.klinux.scratch.model.Result;
+import com.klinux.scratch.service.GameService;
+import com.klinux.scratch.service.MatrixGeneratorService;
+import com.klinux.scratch.util.GameConfigLoader;
+
+public class ScratchGameApp {
+
+    private final GameConfigLoader configLoader;
+    private final MatrixGeneratorServiceFactory matrixFactory;
+    private final GameServiceFactory gameFactory;
+    private final PrintStream out;
+
+<span class="fc" id="L30">    public ScratchGameApp(MatrixGeneratorServiceFactory matrixFactory,</span>
+                          GameServiceFactory gameFactory,
+                          PrintStream out) {
+<span class="fc" id="L33">        this.configLoader = new GameConfigLoader();</span>
+<span class="fc" id="L34">        this.matrixFactory = matrixFactory;</span>
+<span class="fc" id="L35">        this.gameFactory = gameFactory;</span>
+<span class="fc" id="L36">        this.out = out;</span>
+<span class="fc" id="L37">    }</span>
+
+    public void run(String configPath, double betAmount) {
+<span class="fc" id="L40">        GameConfiguration config = configLoader.loadConfig(configPath);</span>
+<span class="fc" id="L41">        MatrixGeneratorService matrixGeneratorService = matrixFactory.create(config);</span>
+<span class="fc" id="L42">        String[][] matrix = matrixGeneratorService.generateMatrix();</span>
+<span class="fc" id="L43">        GameService gameService = gameFactory.create(config);</span>
+<span class="fc" id="L44">        Result result  = new Result(); </span>
+<span class="fc" id="L45">        result = gameService.startGame(matrix, betAmount);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (result.getReward() &lt;= 0.0) {</span>
+<span class="fc" id="L47">        	result.setAppliedWinningCombinations(new HashMap&lt;&gt;());</span>
+<span class="fc" id="L48">            result.setAppliedBonusSymbol(Collections.emptyList());</span>
+        }
+<span class="fc" id="L50">        out.print(result);</span>
+<span class="fc" id="L51">    }</span>
+
+    public static void main(String[] args) {
+<span class="fc" id="L54">        Options options = new Options();</span>
+<span class="fc" id="L55">        options.addOption(Option.builder(&quot;config&quot;)</span>
+<span class="fc" id="L56">                .hasArg()</span>
+<span class="fc" id="L57">                .desc(&quot;Config file path&quot;)</span>
+<span class="fc" id="L58">                .build());</span>
+<span class="fc" id="L59">        options.addOption(Option.builder(&quot;bettingAmount&quot;)</span>
+<span class="fc" id="L60">                .hasArg()</span>
+<span class="fc" id="L61">                .desc(&quot;Betting amount&quot;)</span>
+<span class="fc" id="L62">                .build());</span>
+
+<span class="fc" id="L64">        CommandLineParser parser = new DefaultParser();</span>
+        CommandLine cmd;
+
+        try {
+<span class="fc" id="L68">            cmd = parser.parse(options, args);</span>
+<span class="pc" id="L69">        } catch (ParseException e) {</span>
+<span class="nc" id="L70">            System.out.println(&quot;Error parsing command line arguments&quot;);</span>
+<span class="nc" id="L71">            HelpFormatter formatter = new HelpFormatter();</span>
+<span class="nc" id="L72">            formatter.printHelp(&quot;ScratchGameApp&quot;, options);</span>
+<span class="nc" id="L73">            System.exit(1);</span>
+<span class="nc" id="L74">            return;</span>
+        }
+
+<span class="fc" id="L77">        String configPath = cmd.getOptionValue(&quot;config&quot;, &quot;config/config.json&quot;);</span>
+<span class="fc" id="L78">        double bettingAmount = Double.parseDouble(cmd.getOptionValue(&quot;bettingAmount&quot;, &quot;100&quot;));</span>
+
+<span class="fc" id="L80">        ScratchGameApp app = new ScratchGameApp(</span>
+<span class="fc" id="L81">                new MatrixGeneratorServiceFactory(),</span>
+<span class="fc" id="L82">                new GameServiceFactory(),</span>
+<span class="fc" id="L83">                System.out</span>
+        );
+<span class="fc" id="L85">        app.run(configPath, bettingAmount);</span>
+<span class="fc" id="L86">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

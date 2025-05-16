@@ -28,6 +28,7 @@ public class WinCheckerService {
 
 		Result result = new Result();
 		result.setMatrix(matrix);
+		result.setBetAmount(betAmount);
 
 		// Step 1: Get allSymbols from settings
 		Map<String, Symbol> allSymbols = config.getSymbols();

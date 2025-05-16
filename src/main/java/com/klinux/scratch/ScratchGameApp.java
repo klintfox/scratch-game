@@ -36,13 +36,13 @@ public class ScratchGameApp {
         this.out = out;
     }
 
-    public void run(String configPath, double baseAmount) {
+    public void run(String configPath, double betAmount) {
         GameConfiguration config = configLoader.loadConfig(configPath);
         MatrixGeneratorService matrixGeneratorService = matrixFactory.create(config);
         String[][] matrix = matrixGeneratorService.generateMatrix();
         GameService gameService = gameFactory.create(config);
         Result result  = new Result(); 
-        result = gameService.startGame(matrix, baseAmount);
+        result = gameService.startGame(matrix, betAmount);
         if (result.getReward() <= 0.0) {
         	result.setAppliedWinningCombinations(new HashMap<>());
             result.setAppliedBonusSymbol(Collections.emptyList());

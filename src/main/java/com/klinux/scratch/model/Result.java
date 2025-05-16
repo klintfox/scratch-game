@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 public class Result {
 
+	private double betAmount;
 	private String[][] matrix;
 	private double reward;
 	Map<String, List<String>> appliedWinningCombinations;
@@ -22,6 +23,7 @@ public class Result {
 	    StringBuilder sb = new StringBuilder();
 
 	    // matrix
+	    sb.append("\"amount\": ").append(betAmount).append("\n");
 	    sb.append("\"matrix\": [\n");
 	    for (int i = 0; i < matrix.length; i++) {
 	        sb.append("    [");
@@ -69,7 +71,7 @@ public class Result {
 	    sb.append("\"applied_bonus_symbol\": ");
 	    if (appliedBonusSymbol != null && !appliedBonusSymbol.isEmpty()) {
 	        if (appliedBonusSymbol.size() == 1) {
-	            sb.append("\"").append(appliedBonusSymbol.get(0)).append("\"\n");
+	            sb.append("[\"").append(appliedBonusSymbol.get(0)).append("\"]");
 	        } else {
 	            sb.append("[");
 	            for (int i = 0; i < appliedBonusSymbol.size(); i++) {
@@ -78,12 +80,14 @@ public class Result {
 	                    sb.append(", ");
 	                }
 	            }
-	            sb.append("]\n");
+	            sb.append("]");
 	        }
+	    } else {
+	        sb.append("null");
 	    }
+	    sb.append(",\n");
 
 	    return sb.toString();
 	}
-
 
 }
